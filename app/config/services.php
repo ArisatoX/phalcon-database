@@ -14,8 +14,8 @@ use Phalcon\Url as UrlResolver;
 /**
  * Shared configuration service
  */
-$di->setShared('config', function () {
-    return include APP_PATH . "/config/config.php";
+$di->setShared('config', function () use ($config) {
+    return $config;
 });
 
 /**
@@ -72,10 +72,11 @@ $di->setShared('db', function () {
         'username' => $config->database->username,
         'password' => $config->database->password,
         'dbname'   => $config->database->dbname,
+        'port'   => $config->database->port,
         'charset'  => $config->database->charset
     ];
 
-    if ($config->database->adapter == 'Postgresql') {
+    if ($config->database->adapter == 'Postgresql' || $config->database->adapter == 'Sqlite') {
         unset($params['charset']);
     }
 

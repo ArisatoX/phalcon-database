@@ -3,11 +3,12 @@
 namespace App\Models;
 
 use Phalcon\Mvc\Model;
+use App\Models\Resultset\custom;
 
-class User extends Model
+class Users extends Model
 {
     public $id;
-    public string $name;
+    public $name;
     public $email;
 
     /**
@@ -32,5 +33,10 @@ class User extends Model
      *  Dipanggil setiap pembuatan instace class baru
      */
     public function onConstruct(){
+    }
+
+    public function getResultsetClass()
+    {
+        return custom::class;
     }
 }

@@ -45,6 +45,4 @@ $router->notFound([
     'action' => 'notFound',
 ]);
 
-$request_uri = str_replace($config->application->baseUri, '', $_SERVER['REQUEST_URI']);
-
-$router->handle($request_uri);
+$router->handle($di->get('request_uri'));

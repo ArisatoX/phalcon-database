@@ -43,9 +43,7 @@ try {
      */
     $application = new \Phalcon\Mvc\Application($di);
 
-    $request_uri = str_replace($config->application->baseUri, '', $_SERVER['REQUEST_URI']);
-
-    echo $application->handle($request_uri)->getContent();
+    echo $application->handle($di->get('request_uri'))->getContent();
 } catch (\Exception $e) {
     echo $e->getMessage() . '<br>';
     echo '<pre>' . $e->getTraceAsString() . '</pre>';

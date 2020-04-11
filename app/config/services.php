@@ -19,6 +19,12 @@ $di->setShared('config', function () use ($config) {
     return $config;
 });
 
+$di->setShared('request_uri', function (){
+    $config = $this->getConfig();
+    return $config->application->baseUri == '/' ?
+        $_SERVER['REQUEST_URI'] : str_replace($config->application->baseUri, '', $_SERVER['REQUEST_URI']);
+});
+
 /**
  * The URL component is used to generate all kind of urls in the application
  */

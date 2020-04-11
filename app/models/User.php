@@ -32,5 +32,13 @@ class User extends Model
      *  Dipanggil setiap pembuatan instace class baru
      */
     public function onConstruct(){
+
+    }
+
+    public function toString(){
+        return
+            "ID : " . $this->id . ", " .
+            "Nama : " . $this->name . ", " .
+            "Email : " . $this->email . "";
     }
 }

@@ -3,27 +3,66 @@ declare(strict_types=1);
 
 namespace App\Controllers;
 
-use App\Models\Users;
+// use App\Models\Users;
 use Phalcon\Db\Adapter\AdapterInterface;
 use Phalcon\Mvc\Model\MetaData\Memory;
 use Phalcon\Mvc\ModelInterface;
 use Phalcon\Cache;
+use App\Models\User;
+use Phalcon\Db\Column;
 
 class TutorialModelController extends ControllerBase
 {
     public function findAction(){
-
-        /** @var User $find1 */
-        $find1 = Users::findFirst(2);
-        print_r($find1);
-        exit();
-        foreach ($a as $b){
-            print_r($b->id);
+        /**
+         * find all data
+         */
+        $find_all = User::find();
+        foreach ($find_all as $data){
+            echo $data->toString() . "<br>";
         }
+
+        echo "<br><br>";
+
+        /**
+         * findFirst, cari semua data dimana primary key (id) = 8
+         */
+        $find_first = User::findFirst(8);
+        echo $find_first->toString();
+
+        echo "<br><br>";
+
+        /**
+         * findBy*, cari semua data dimana name = coba
+         */
+        $find_by_name = User::findByName('coba');
+        foreach ($find_by_name as $data){
+            echo $data->toString() . "<br>";
+        }
+
+        echo "<br><br>";
+
+        /**
+         * cari semua data dengan name = coba dan email = email
+         */
+        $find_with_param = User::find([
+            'conditions' => 'name = :name: and email = ?1',
+            'bind' => [
+                1 => 'email@email.com',
+                'name' => 'coba',
+            ],
+            'bindTypes' => [
+                'name' => Column::BIND_PARAM_STR,
+                1 => Column::BIND_PARAM_STR,
+            ],
+            'limit' => 4,
+            'order' => 'name desc, id desc'
+        ]);
+        echo json_encode($find_with_param->jsonSerialize());
     }
 
     public function insertAction(){
-        $user = new Users();
+        $user = new User();
         $user->name = "coba";
         $user->email = "email";
 
@@ -39,7 +78,7 @@ class TutorialModelController extends ControllerBase
     }
 
     public function find2Action() {
-        $find2 = Users::find();
+        $find2 = User::find();
         
         // foreach
         echo nl2br("foreach:\n");
@@ -110,7 +149,7 @@ class TutorialModelController extends ControllerBase
     // }
 
     public function concatAction() {
-        $find3 = Users::find();
+        $find3 = User::find();
         $find = $find3->getFirst(); 
         $concatResult = $find3->concat($find->name,$find->email);
         echo $concatResult;
@@ -118,7 +157,7 @@ class TutorialModelController extends ControllerBase
 
     public function filterAction() {
         
-        $find4 = Users::find();
+        $find4 = User::find();
 
         $find4 = $find4->filter(
             function ($find) {

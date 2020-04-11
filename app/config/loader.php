@@ -9,8 +9,8 @@ $loader = new \Phalcon\Loader();
 
 $loader->registerNamespaces([
     'Phalcon\Db' => APP_PATH . '/lib/Phalcon/Db',
-    'App\Controller' => $config->application->controllersDir,
-    'App\Model' => $config->application->modelsDir,
+    'App\Controllers' => $config->application->controllersDir,
+    'App\Models' => $config->application->modelsDir,
 ]);
 
 $loader->register();

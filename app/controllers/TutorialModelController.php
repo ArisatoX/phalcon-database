@@ -1,17 +1,20 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Controller;
+namespace App\Controllers;
 
 use App\Model\User;
 use Phalcon\Db\Adapter\AdapterInterface;
 use Phalcon\Mvc\Model\MetaData\Memory;
+use Phalcon\Mvc\ModelInterface;
 
 class TutorialModelController extends ControllerBase
 {
     public function findAction(){
+
+        /** @var User $find1 */
         $find1 = User::findFirst(8);
-        print_r($find1);
+        print_r($find1->wow());
         exit();
         foreach ($a as $b){
             print_r($b->id);

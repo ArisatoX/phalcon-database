@@ -19,7 +19,7 @@ $router->add('/:controller', [
 ]);
 
 
-$router->add('/:controller/:param', [
+$router->add('/:controller/:params', [
     'namespace' => 'App\Controller',
     'controller' =>  1,
     'action' =>  'index',
@@ -32,7 +32,7 @@ $router->add('/:controller/:action', [
     'action' =>  2,
 ]);
 
-$router->add('/:controller/:action/:param', [
+$router->add('/:controller/:action/:params', [
     'namespace' => 'App\Controller',
     'controller' =>  1,
     'action' =>  2,

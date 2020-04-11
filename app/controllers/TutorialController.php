@@ -14,16 +14,63 @@ class TutorialController extends ControllerBase
         $this->connection = $this->getDI()->get('db');
     }
 
-    public function selectAction()
+    public function indexAction()
     {
-        $query = "SELECT name, database_id, create_date FROM sys.databases where name = :nama;";
-        $success = $this->connection->query(
+        $query = "
+            SELECT name, database_id, create_date FROM sys.databases 
+            where name = :name and create_date < :date;
+        ";
+        $date_string = (new \DateTime('now'))->format('Y-m-d H:i:s');
+        $data = $this->db->query(
             $query,
             [
-                "pbkk"
+                'date' => $date_string,
+                'name' => "pbkk",
             ]
         );
-        print_r($success->getInternalResult()->rowCount());
+        print_r($data->fetchAll());
+    }
+
+    public function createDatabaseAction(){
+        $res = $this->db->execute("
+            CREATE TABLE [user] ( 
+                id BIGINT not NULL IDENTITY(1,1) PRIMARY KEY,
+                name VARCHAR(200) not NULL,
+                email VARCHAR(200),
+            );
+        ");
+        print_r($res);
+    }
+
+    public function insertAction($name=null, $email=null){
+        if ($name == null)
+            return 'name should be filled';
+
+        $res = $this->db->execute("
+            INSERT INTO [user] (name, email) 
+            values (:name, :email);
+        ", [
+            'name' => $name,
+            'email' => $email,
+        ]);
+
+        print_r($res);
+    }
+
+    public function transactionAction(){
+        try {
+            $this->db->begin();
+
+            $this->db->execute('DELETE FROM [user] WHERE id = 8');
+            $this->db->execute('DELETE FROM [user] WHERE id = 2');
+            $this->db->execute('DELETE FROM [user] WHERE id = 3');
+
+            $this->db->commit();
+            echo 'done';
+        } catch (\Exception $e){
+            $this->db->rollback();
+            echo $e->getMessage();
+        }
     }
 
 }

@@ -5,7 +5,7 @@ namespace App\Controller;
 
 use Phalcon\Db\Adapter\AdapterInterface;
 
-class TutorialController extends ControllerBase
+class TutorialRawController extends ControllerBase
 {
 
     protected AdapterInterface $connection;
@@ -33,7 +33,7 @@ class TutorialController extends ControllerBase
 
     public function createDatabaseAction(){
         $res = $this->db->execute("
-            CREATE TABLE [user] ( 
+            CREATE TABLE users ( 
                 id BIGINT not NULL IDENTITY(1,1) PRIMARY KEY,
                 name VARCHAR(200) not NULL,
                 email VARCHAR(200),
@@ -47,7 +47,7 @@ class TutorialController extends ControllerBase
             return 'name should be filled';
 
         $res = $this->db->execute("
-            INSERT INTO [user] (name, email) 
+            INSERT INTO users (name, email) 
             values (:name, :email);
         ", [
             'name' => $name,
@@ -61,9 +61,9 @@ class TutorialController extends ControllerBase
         try {
             $this->db->begin();
 
-            $this->db->execute('DELETE FROM [user] WHERE id = 8');
-            $this->db->execute('DELETE FROM [user] WHERE id = 2');
-            $this->db->execute('DELETE FROM [user] WHERE id = 3');
+            $this->db->execute('DELETE FROM users WHERE id = 8');
+            $this->db->execute('DELETE FROM users WHERE id = 2');
+            $this->db->execute('DELETE FROM users WHERE id = 3');
 
             $this->db->commit();
             echo 'done';

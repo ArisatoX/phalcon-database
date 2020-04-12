@@ -1,8 +1,11 @@
 <?php
 namespace Phalcon\Db\Adapter\Pdo;
 
+use PDO;
 use Phalcon\Db\Column;
+use Phalcon\Db\ColumnInterface;
 use Phalcon\Db\Result\PdoSqlsrv as ResultPdo;
+use Phalcon\Db\ResultInterface;
 
 /**
  * Phalcon\Db\Adapter\Pdo\Sqlsrv
@@ -20,7 +23,7 @@ use Phalcon\Db\Result\PdoSqlsrv as ResultPdo;
  *
  * @property \Phalcon\Db\Dialect\Sqlsrv $dialect
  */
-class Sqlsrv extends \Phalcon\Db\Adapter\Pdo\AbstractPdo
+class Sqlsrv extends AbstractPdo
 {
 
     protected $type = 'sqlsrv';
@@ -57,8 +60,8 @@ class Sqlsrv extends \Phalcon\Db\Adapter\Pdo\AbstractPdo
         $dbusername = $descriptor['username'];
         $dbpassword = $descriptor['password'];
 
-        $this->pdo = new \PDO($dsn, $dbusername, $dbpassword);
-        $this->pdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
+        $this->pdo = new PDO($dsn, $dbusername, $dbpassword);
+        $this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
         /*
          * Set dialect class
@@ -89,7 +92,7 @@ class Sqlsrv extends \Phalcon\Db\Adapter\Pdo\AbstractPdo
      * @param string $table
      * @param string $schema
      *
-     * @return array|\Phalcon\Db\ColumnInterface[]
+     * @return array|ColumnInterface[]
      */
     public function describeColumns($table, string $schema = null): array
     {
@@ -272,9 +275,7 @@ class Sqlsrv extends \Phalcon\Db\Adapter\Pdo\AbstractPdo
             /*
              * Check if the column allows null values
              */
-            if ($field['NULLABLE'] == 0) {
-                $definition['notNull'] = true;
-            }
+            $definition['notNull'] = $field['NULLABLE'] == 0;
 
             /*
              * Check if the column is auto increment
@@ -311,7 +312,7 @@ class Sqlsrv extends \Phalcon\Db\Adapter\Pdo\AbstractPdo
      * @param mixed  $bindParams
      * @param mixed  $bindTypes
      *
-     * @return bool|\Phalcon\Db\ResultInterface
+     * @return bool|ResultInterface
      */
     public function query($sqlStatement, $bindParams = null, $bindTypes = null)
     {
@@ -332,28 +333,28 @@ class Sqlsrv extends \Phalcon\Db\Adapter\Pdo\AbstractPdo
 
         $pdo = $this->pdo;
 
-        $cursor = \PDO::CURSOR_SCROLL;
-        $cursorScrollType = \PDO::SQLSRV_CURSOR_STATIC;
+        $cursor = PDO::CURSOR_SCROLL;
+        $cursorScrollType = PDO::SQLSRV_CURSOR_STATIC;
         if (strpos($sqlStatement, 'exec') !== false) {
-            $cursor = \PDO::CURSOR_FWDONLY;
+            $cursor = PDO::CURSOR_FWDONLY;
         }
 
         $statement = null;
         if (is_array($bindParams)) {
             
             if (strpos($sqlStatement, 'exec') !== false) {
-                $statement = $pdo->prepare($sqlStatement, array(\PDO::ATTR_CURSOR => $cursor));
+                $statement = $pdo->prepare($sqlStatement, array(PDO::ATTR_CURSOR => $cursor));
             } else {
-                $statement = $pdo->prepare($sqlStatement, array(\PDO::ATTR_CURSOR => $cursor, \PDO::SQLSRV_ATTR_CURSOR_SCROLL_TYPE => $cursorScrollType));
+                $statement = $pdo->prepare($sqlStatement, array(PDO::ATTR_CURSOR => $cursor, PDO::SQLSRV_ATTR_CURSOR_SCROLL_TYPE => $cursorScrollType));
             }
             if (is_object($statement)) {
                 $statement = $this->executePrepared($statement, $bindParams, $bindTypes);
             }
         } else {
             if (strpos($sqlStatement, 'exec') !== false) {
-                $statement = $pdo->prepare($sqlStatement, array(\PDO::ATTR_CURSOR => $cursor));
+                $statement = $pdo->prepare($sqlStatement, array(PDO::ATTR_CURSOR => $cursor));
             } else {
-                $statement = $pdo->prepare($sqlStatement, array(\PDO::ATTR_CURSOR => $cursor, \PDO::SQLSRV_ATTR_CURSOR_SCROLL_TYPE => $cursorScrollType));
+                $statement = $pdo->prepare($sqlStatement, array(PDO::ATTR_CURSOR => $cursor, PDO::SQLSRV_ATTR_CURSOR_SCROLL_TYPE => $cursorScrollType));
             }
             $statement->execute();
         }
@@ -411,13 +412,13 @@ class Sqlsrv extends \Phalcon\Db\Adapter\Pdo\AbstractPdo
 
         $pdo = $this->pdo;
 
-        $cursor = \PDO::CURSOR_SCROLL;
+        $cursor = PDO::CURSOR_SCROLL;
         if (strpos($sqlStatement, 'exec') !== false) {
-            $cursor = \PDO::CURSOR_FWDONLY;
+            $cursor = PDO::CURSOR_FWDONLY;
         }
 
         if (is_array($bindParams)) {
-            $statement = $pdo->prepare($sqlStatement, array(\PDO::ATTR_CURSOR => $cursor));
+            $statement = $pdo->prepare($sqlStatement, array(PDO::ATTR_CURSOR => $cursor));
             if (is_object($statement)) {
                 $newStatement = $this->executePrepared($statement, $bindParams, $bindTypes);
                 $affectedRows = $newStatement->rowCount();

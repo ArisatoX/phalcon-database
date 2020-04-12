@@ -4,6 +4,7 @@ declare(strict_types=1);
 use Phalcon\Escaper;
 use Phalcon\Events\Event;
 use Phalcon\Flash\Direct as Flash;
+use Phalcon\Mvc\Dispatcher;
 use Phalcon\Mvc\Model\Metadata\Memory as MetaDataAdapter;
 use Phalcon\Mvc\View;
 use Phalcon\Mvc\View\Engine\Php as PhpEngine;
@@ -131,11 +132,11 @@ $di->setShared('session', function () {
 
 $di->setShared('dispatcher', function() {
 
-    $eventsManager = new \Phalcon\Events\Manager();
+    $eventsManager = $this->getShared('eventsManager');
 
     $eventsManager->attach(
         'dispatch:beforeException',
-        function (Event $event, \Phalcon\Mvc\Dispatcher $dispatcher, Exception $exception) {
+        function (Event $event, Dispatcher $dispatcher, Exception $exception) {
             // 404
             if ($exception instanceof \Phalcon\Dispatcher\Exception) {
                 $dispatcher->forward(
@@ -150,7 +151,7 @@ $di->setShared('dispatcher', function() {
         }
     );
 
-    $dispatcher = new \Phalcon\Mvc\Dispatcher();
+    $dispatcher = new Dispatcher();
 
     //Bind the EventsManager to the dispatcher
     $dispatcher->setEventsManager($eventsManager);

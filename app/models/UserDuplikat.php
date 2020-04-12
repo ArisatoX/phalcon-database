@@ -4,11 +4,11 @@ namespace App\Models;
 
 use Phalcon\Mvc\Model;
 
-class User extends Model
+class UserDuplikat extends Model
 {
-    public $id;
-    public $name;
-    public $email;
+    public $user_id;
+    public $user_name;
+    public $user_email;
 
     /**
      *  Dipanggil sekali untuk digunakan seluruh instance
@@ -35,10 +35,18 @@ class User extends Model
 
     }
 
+    public function columnMap(){
+        return [
+            'id' => 'user_id',
+            'name' => 'user_name',
+            'email' => 'user_email'
+        ];
+    }
+
     public function toString(){
         return
-            "ID : " . $this->id . ", " .
-            "Nama : " . $this->name . ", " .
-            "Email : " . $this->email . "";
+            "ID : " . $this->user_id . ", " .
+            "Nama : " . $this->user_name . ", " .
+            "Email : " . $this->user_email . ", ";
     }
 }

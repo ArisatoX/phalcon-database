@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Phalcon\Mvc\Model;
+use App\Models\Resultset\custom;
 
 class User extends Model
 {
@@ -41,4 +42,24 @@ class User extends Model
             "Nama : " . $this->name . ", " .
             "Email : " . $this->email . "";
     }
+
+    public function getResultsetClass()
+    {
+        return custom::class;
+    }
+
+    // public function beforeSave()
+    // {
+    //     $this->email = join(',', $this->email);
+    // }
+
+    // public function afterFetch()
+    // {
+    //     $this->email = explode(',', $this->email);
+    // }
+    
+    // public function afterSave()
+    // {
+    //     $this->email = explode(',', $this->email);
+    // }
 }

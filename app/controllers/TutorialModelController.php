@@ -3,6 +3,11 @@ declare(strict_types=1);
 
 namespace App\Controllers;
 
+// use App\Models\Users;
+use Phalcon\Db\Adapter\AdapterInterface;
+use Phalcon\Mvc\Model\MetaData\Memory;
+use Phalcon\Mvc\ModelInterface;
+use Phalcon\Cache;
 use App\Models\User;
 use App\Models\UserDuplikat;
 use Phalcon\Db\Column;
@@ -195,5 +200,137 @@ class TutorialModelController extends ControllerBase
             echo $e->getMessage();
         }
     }
+
+    public function find2Action() {
+        $find2 = User::find();
+        
+        // foreach
+        echo nl2br("foreach:\n");
+        foreach ($find2 as $find) {
+            echo $find->name, PHP_EOL;
+        }
+
+        // while
+        echo nl2br("\nwhile:\n");
+        $find2->rewind();
+        while ($find2->valid()) {
+            $find = $find2->current();
+
+            echo $find->name, PHP_EOL;
+
+            $find2->next();
+        }
+
+        // count
+        echo nl2br("\nCount:\n");
+        echo count($find2);
+        echo $find2->count();
+
+        // seek
+        echo nl2br("\nSeek(2):\n");
+        $find2->seek(2);
+        $find = $find2->current();
+        echo $find->name, PHP_EOL;
+
+        // array
+        echo nl2br("\nArray[2]:\n");
+        $find = $find2[2];
+        echo $find->name, PHP_EOL;
+
+        // array - isset
+        echo nl2br("\nArray[2] - isset:\n");
+        if (true === isset($find2[2])) {
+        $find = $find2[2];
+        echo $find->name, PHP_EOL;
+        }
+
+        // First
+        echo nl2br("\nFirst:\n");
+        $find = $find2->getFirst();
+        echo $find->name, PHP_EOL;
+
+        // Last
+        echo nl2br("\nLast:\n");
+        $find = $find2->getLast();
+        echo $find->name, PHP_EOL;
+    }
+
+    // public function putCacheAction() {
+    //     $find3 = Users::find();
+
+    //     file_put_contents(
+    //         'invoices.cache',
+    //         serialize($find3)
+    //     );
+
+    //     $find3 = unserialize(
+    //         file_get_contents('invoices.cache')
+    //     );
+
+    //     foreach ($find3 as $find) {
+    //         echo $find->name,' ', $find->email,' ';
+    //         }
+    // }
+
+    public function concatAction() {
+        $find3 = User::find();
+        $find = $find3->getFirst(); 
+        $concatResult = $find3->concat($find->name,$find->email);
+        echo $concatResult;
+    }
+
+    public function filterAction() {
+        
+        $find4 = User::find();
+
+        $find4 = $find4->filter(
+            function ($find) {
+                // echo $find->email;
+                if (substr_compare($find->email, ".com", -4, 4) == 0) {
+                    // echo "yes";
+                    return $find;
+                }
+                else print_r($find->jsonSerialize()); 
+                
+            }
+        );
+    }
+
+    public function calculationAction() {
+        $find5 = User::maximum(
+            [
+                'column' => 'id',
+            ]
+        );
+
+        echo $find5;
+    }
+
+    public function deleteAction() {
+        $find6 = User::findFirst(
+            [
+                'conditions' => 'id = :id:',
+                'bind'       => [
+                    'id' => 8,
+                ]
+            ]
+        );
+
+        if (false !== $find6) {
+            if (false === $find6->delete()) {
+                $messages = $find6->getMessages();
+            
+                foreach ($messages as $message) {
+                    echo $message . PHP_EOL;
+                }
+            } else {
+        
+                echo 'Record Deleted';
+            }
+        }
+        
+    }
+
+    
 }
 

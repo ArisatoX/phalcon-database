@@ -25,7 +25,7 @@ class TutorialRawController extends ControllerBase
             $query,
             [
                 'date' => $date_string,
-                'name' => "pbkk",
+                'name' => "phalcon-database-test",
             ]
         );
         print_r($data->fetchAll());

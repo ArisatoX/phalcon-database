@@ -171,5 +171,42 @@ class TutorialModelController extends ControllerBase
             }
         );
     }
+
+    public function calculationAction() {
+        $find5 = User::maximum(
+            [
+                'column' => 'id',
+            ]
+        );
+
+        echo $find5;
+    }
+
+    public function deleteAction() {
+        $find6 = User::findFirst(
+            [
+                'conditions' => 'id = :id:',
+                'bind'       => [
+                    'id' => 8,
+                ]
+            ]
+        );
+
+        if (false !== $find6) {
+            if (false === $find6->delete()) {
+                $messages = $find6->getMessages();
+            
+                foreach ($messages as $message) {
+                    echo $message . PHP_EOL;
+                }
+            } else {
+        
+                echo 'Record Deleted';
+            }
+        }
+        
+    }
+
+    
 }
 
